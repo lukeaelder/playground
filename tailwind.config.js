@@ -11,6 +11,11 @@ module.exports = {
             maxWidth: {
                 '8xl': '1376px',
             },
+            colors: {
+                neutral: {
+                    1000: '#0F0F0F',
+                },
+            },
         },
     },
     plugins: [],
