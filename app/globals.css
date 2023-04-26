@@ -48,6 +48,44 @@ body::-webkit-scrollbar-thumb:hover {
 
 @keyframes example {
     0% {
-        
+        transform: translateY(0);
     }
+    15% {
+        transform: translateY(-550px);
+    }
+    30% {
+        transform: translateY(-345px);
+    }
+    45% {
+        transform: translateY(-420px);
+    }
+    60% {
+        transform: translateY(-388px);
+    }
+    75% {
+        transform: translateY(-403px);
+    }
+    85% {
+        transform: translateY(-399px);
+    }
+    100% {
+        transform: translateY(-400px);
+    }
+}
+
+@keyframes linevert {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+    transform: translateX(400px);
+    }
+}
+
+.play-example {
+    animation: example 6000ms ease-in-out infinite;
+}
+
+.line-vert {
+    animation: linevert 6000ms linear infinite;
 }

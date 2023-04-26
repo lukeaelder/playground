@@ -25,6 +25,7 @@ const Page = () => {
         const newPathFromData = generatePath(newData, 0.5);
         console.log(newData);
         console.log(newPathFromData);
+        console.log(generatePath(newData));
         setPathData(newData);
         setPathRes(newPathFromData);
     };
@@ -47,13 +48,19 @@ const Page = () => {
                     >
                         <path d={pathRes} />
                     </svg>
-                    <div className='vert absolute top-0 h-full w-[1px] border-r-[1px] border-dashed border-neutral-700'></div>
-                    <div className='horz absolute left-0 h-[1px] w-full border-t-[1px] border-dashed border-neutral-700'></div>
+                    <div
+                        className={`vert absolute top-0 h-full w-[1px] border-r-[1px] border-dashed border-neutral-700 ${
+                            animate ? 'line-vert' : ''
+                        }`}
+                    ></div>
+                    <div className={`horz absolute left-0 h-[1px] w-full border-t-[1px] border-dashed border-neutral-700 ${
+                            animate ? 'play-example' : ''
+                        }`}></div>
                 </div>
                 <div className='relative flex h-[400px] w-[40px] items-end justify-center'>
                     <div
-                        className={`h-[40px] w-[40px] rounded-lg bg-rose-500 absolute bottom-0 transition ${
-                            animate ? 'translate-y-[-360px]' : ''
+                        className={`absolute bottom-[-20px] h-[40px] w-[40px] rounded-lg bg-rose-500 ${
+                            animate ? 'play-example' : ''
                         }`}
                         onClick={() => updateData()}
                     ></div>
@@ -68,7 +75,7 @@ const Page = () => {
                 </div>
             </div>
             <textarea
-                className='mt-[20px] h-[200px] w-[880px] border-[1px] border-neutral-700 bg-transparent p-[20px] text-xs outline-rose-500 transition'
+                className='mt-[40px] h-[200px] w-[880px] border-[1px] border-neutral-700 bg-transparent p-[20px] text-xs outline-rose-500 transition'
                 onChange={(e) => setPathInput(e.target.value)}
                 value={pathInput}
             ></textarea>
