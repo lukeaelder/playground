@@ -1,4 +1,6 @@
 import Navbar from '../components/Navbar';
+import Navlinks from '../components/NavLinks';
+import PageManager from '../components/PageManager';
 import './globals.css';
 import { Providers } from './providers';
 
@@ -11,7 +13,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <body>
                 <Providers>
                     <Navbar />
-                    {children}
+                    <Navlinks />
+                    <PageManager>{children}</PageManager>
                 </Providers>
             </body>
         </html>

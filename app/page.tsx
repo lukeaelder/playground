@@ -1,12 +1,9 @@
-import Navlinks from '../components/NavLinks';
+import Colors from '../components/Colors';
 
 export default function Page() {
     return (
-        <main>
-            <Navlinks />
-            <div className='h-[300vh] pl-64 pt-14'>
-                <div className='h-full'></div>
-            </div>
-        </main>
+        <div className='h-[300vh]'>
+            <Colors />
+        </div>
     );
 }

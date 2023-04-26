@@ -45,3 +45,9 @@ body::-webkit-scrollbar-thumb:hover {
 .dark body::-webkit-scrollbar-thumb:hover {
     background-color: #737373!important;
 }
+
+@keyframes example {
+    0% {
+        
+    }
+}

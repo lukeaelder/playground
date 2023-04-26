@@ -1,26 +1,26 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import ShinyButton from './ShinyButton';
 
-interface NavLinkProps {
+interface INavLinkProps {
     path: string;
     label: string;
     url: string;
-    curState?: boolean;
 }
 
-const NavLink = ({ path, label, url, curState = false }: NavLinkProps) => {
-    const [state, setState] = useState(curState);
-
+const NavLink = ({ path, label, url }: INavLinkProps) => {
+    const pathname = usePathname();
 
     return (
         <Link
             href={url}
-            className={`flex w-full items-center gap-6 rounded-[.625rem] px-3 py-2 text-[.9375rem] ${
-                state
-                    ? 'bg-neutral-200/70 font-normal hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700/80'
-                    : 'font-light hover:bg-neutral-200/70 active:bg-neutral-200 dark:hover:bg-neutral-800 dark:active:bg-neutral-700/80'
+            className={`flex w-full items-center gap-6 rounded-[.625rem] px-3 py-2 text-[.9375rem] transition duration-[40ms] ${
+                pathname === url
+                    ? 'bg-neutral-200/80 font-normal hover:bg-neutral-300/80 active:bg-neutral-400/60 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:active:bg-neutral-600'
+                    : 'font-light hover:bg-neutral-200/80 active:bg-neutral-300/80 dark:hover:bg-neutral-800 dark:active:bg-neutral-700'
             }`}
         >
             <svg
@@ -29,12 +29,12 @@ const NavLink = ({ path, label, url, curState = false }: NavLinkProps) => {
                 fill='none'
                 strokeLinecap='round'
                 strokeLinejoin='round'
-                className='h-6 w-6 stroke-2'
+                className='pointer-events-none z-10 h-6 w-6 stroke-2'
             >
                 <path fill='none' stroke='none' d='M0 0h24v24H0z' />
                 <path d={path} />
             </svg>
-            <p>{label}</p>
+            <p className='pointer-events-none z-10'>{label}</p>
         </Link>
     );
 };
