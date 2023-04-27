@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import ShinyButton from './ShinyButton';
 
 const NavThemeToggle = () => {
     const [mounted, setMounted] = useState(false);
