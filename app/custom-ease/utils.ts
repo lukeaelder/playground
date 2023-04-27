@@ -1,3 +1,5 @@
+import path from 'path';
+
 const commandTypes: any = {
     0: { name: 'MOVE_TO', args: 2, command: 'mM' },
     1: { name: 'CURVE_TO', args: 6, command: 'cC' },
@@ -9,6 +11,10 @@ const isWhiteSpace = (c: string) => {
 
 const isDigit = (c: string) => {
     return c.charCodeAt(0) >= '0'.charCodeAt(0) && c.charCodeAt(0) <= '9'.charCodeAt(0);
+};
+
+const humanizeDigit = (num: number) => {
+    return +num.toFixed(3).replace(/\.?0*$/, '');
 };
 
 /*
@@ -105,12 +111,12 @@ const generatePathData = (curPath: string) => {
                 } else if (curCommandType === 1) {
                     if (isRelative) {
                         // Add current cords to all points and fix to 3 decimal places
-                        curArgs[0] = +(curArgs[0] + curCords.x).toFixed(3).replace(/\.?0*$/, '');
-                        curArgs[1] = +(curArgs[1] + curCords.y).toFixed(3).replace(/\.?0*$/, '');
-                        curArgs[2] = +(curArgs[2] + curCords.x).toFixed(3).replace(/\.?0*$/, '');
-                        curArgs[3] = +(curArgs[3] + curCords.y).toFixed(3).replace(/\.?0*$/, '');
-                        curArgs[4] = +(curArgs[4] + curCords.x).toFixed(3).replace(/\.?0*$/, '');
-                        curArgs[5] = +(curArgs[5] + curCords.y).toFixed(3).replace(/\.?0*$/, '');
+                        curArgs[0] = humanizeDigit(curArgs[0] + curCords.x);
+                        curArgs[1] = humanizeDigit(curArgs[1] + curCords.y);
+                        curArgs[2] = humanizeDigit(curArgs[2] + curCords.x);
+                        curArgs[3] = humanizeDigit(curArgs[3] + curCords.y);
+                        curArgs[4] = humanizeDigit(curArgs[4] + curCords.x);
+                        curArgs[5] = humanizeDigit(curArgs[5] + curCords.y);
                     }
                     pushCommand({
                         x1: curArgs[0],
@@ -190,6 +196,7 @@ const generatePathData = (curPath: string) => {
     return commands;
 };
 
+// Generates path string from commands array
 const generatePath = (pathData: any, offset: number = 0) => {
     let res = '';
     for (let i = 0; i < pathData.length; i++) {
@@ -213,4 +220,51 @@ const generatePath = (pathData: any, offset: number = 0) => {
     return res;
 };
 
-export { generatePathData, generatePath };
+// Turn commands array into css animation
+const generateAnimation = (pathData: any, properties: any = []) => {
+    let res = `@keyframes animation {`;
+    const prevCords = { x: 0, y: 0 };
+    const easings = [];
+
+    // Loop through commands generating the bezier curve for each keyframe
+    for (let i = 0; i < pathData.length; i++) {
+        // Get bounding box of command and scale
+        const scale = [
+            Math.abs(pathData[i].x - prevCords.x),
+            Math.abs(pathData[i].y - prevCords.y),
+        ];
+        if (scale[0] === 0) scale[0] = 0.001;
+        if (scale[1] === 0) scale[1] = 0.001;
+        [scale[0], scale[1]] = [1 / scale[0], 1 / scale[1]];
+        // Difference between [P0 and P1] and [P2 and P3] on x and y axis
+        const diffs = [
+            [Math.abs(prevCords.x - pathData[i].x1), Math.abs(prevCords.y - pathData[i].y1)],
+            [Math.abs(pathData[i].x - pathData[i].x2), Math.abs(pathData[i].y - pathData[i].y2)],
+        ];
+        if (i !== 0)
+            easings.push([
+                humanizeDigit(0 + scale[0] * diffs[0][0]),
+                humanizeDigit(0 + scale[1] * diffs[0][1]),
+                humanizeDigit(1 - scale[0] * diffs[1][0]),
+                humanizeDigit(1 - scale[1] * diffs[1][1]),
+            ]);
+        [prevCords.x, prevCords.y] = [pathData[i].x, pathData[i].y];
+    }
+
+    // Generate keyframes
+    for (let i = 0; i < pathData.length; i++) {
+        res += `${humanizeDigit(pathData[i].x * 100)}% {
+            transform: translateY(-${humanizeDigit(pathData[i].y * 400)}px);
+            ${
+                i !== pathData.length - 1
+                    ? 'animation-timing-function: cubic-bezier(' + easings[i] + ');'
+                    : ''
+            }
+        }`;
+    }
+
+    res += '}';
+    return res;
+};
+
+export { generatePathData, generatePath, generateAnimation };
