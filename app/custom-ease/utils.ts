@@ -1,5 +1,3 @@
-import path from 'path';
-
 const commandTypes: any = {
     0: { name: 'MOVE_TO', args: 2, command: 'mM' },
     1: { name: 'CURVE_TO', args: 6, command: 'cC' },
@@ -220,14 +218,20 @@ const generatePath = (pathData: any, offset: number = 0) => {
     return res;
 };
 
-// Turn commands array into css animation
+/*
+    Turns path data into an animation
+    properties: 
+*/
+    
 const generateAnimation = (pathData: any, properties: any = []) => {
     let res = `@keyframes animation {`;
     const prevCords = { x: 0, y: 0 };
-    const easings = [];
+    const bezierCurves = [];
+    const propertyAnimations = [];
 
     // Loop through commands generating the bezier curve for each keyframe
     for (let i = 0; i < pathData.length; i++) {
+        // Creating bezier curve
         // Get bounding box of command and scale
         const scale = [
             Math.abs(pathData[i].x - prevCords.x),
@@ -242,22 +246,25 @@ const generateAnimation = (pathData: any, properties: any = []) => {
             [Math.abs(pathData[i].x - pathData[i].x2), Math.abs(pathData[i].y - pathData[i].y2)],
         ];
         if (i !== 0)
-            easings.push([
-                humanizeDigit(0 + scale[0] * diffs[0][0]),
-                humanizeDigit(0 + scale[1] * diffs[0][1]),
-                humanizeDigit(1 - scale[0] * diffs[1][0]),
-                humanizeDigit(1 - scale[1] * diffs[1][1]),
+            bezierCurves.push([
+                humanizeDigit(0 + scale[0] * diffs[0][0] * -1),
+                humanizeDigit(0 + scale[1] * diffs[0][1] * -1),
+                humanizeDigit(1 - scale[0] * diffs[1][0] * -1),
+                humanizeDigit(1 - scale[1] * diffs[1][1] * -1),
             ]);
         [prevCords.x, prevCords.y] = [pathData[i].x, pathData[i].y];
+
+        // Creating property animations
+        
     }
 
     // Generate keyframes
     for (let i = 0; i < pathData.length; i++) {
         res += `${humanizeDigit(pathData[i].x * 100)}% {
-            transform: translateY(-${humanizeDigit(pathData[i].y * 400)}px);
+            transform: translateY(${humanizeDigit(pathData[i].y * 400) * -1}px);
             ${
                 i !== pathData.length - 1
-                    ? 'animation-timing-function: cubic-bezier(' + easings[i] + ');'
+                    ? 'animation-timing-function: cubic-bezier(' + bezierCurves[i] + ');'
                     : ''
             }
         }`;

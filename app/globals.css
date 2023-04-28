@@ -57,11 +57,11 @@ body::-webkit-scrollbar-thumb:hover {
 
 @keyframes examplegenerated2 {
     0% {
-        transform: translateY(-0px);
+        transform: translateY(0px);
         animation-timing-function: cubic-bezier(0, 0, 0.933, 0.961);
     }
     1.5% {
-        transform: translateY(--41.2px);
+        transform: translateY(41.2px);
         animation-timing-function: cubic-bezier(0.02, 0.035, 0.68, 0.691);
     }
     6.5% {
